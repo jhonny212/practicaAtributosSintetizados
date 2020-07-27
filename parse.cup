@@ -1,0 +1,45 @@
+import java_cup.runtime.Symbol;
+parser code {:
+   public void syntax_error(Symbol s){
+       System.out.println("Error R de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
+    }
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+    System.out.println("La Cadena:" +s.value+" en la Linea:"+(s.right+1) +" ,Columna: "+s.left+"esta fuera de contexto." );
+ }
+:}
+
+
+terminal N,Error;
+non-terminal S, E;
+start with S;
+
+S::= E:e
+{:
+NodeE n1=(NodeE)e;
+System.out.println("El valor en decimal es de:");
+System.out.println(n1.getVal());
+:};
+
+/*S::= E:e
+{:
+NodeE n1=(NodeE)e;
+System.out.println("El valor ingresado en valor decimal es de:");
+System.out.println(n1.getVal());
+
+:}
+;
+*/
+E::= N:e E:e1
+{:
+int val=Integer.parseInt((String)e);
+NodeE n1=(NodeE)e1;
+double value=(val*(Math.pow(8,n1.getPos()+1)))+n1.getVal();
+int v=(int)value;
+RESULT= new NodeE(v,n1.getPos()+1);
+:};
+E::= N:e
+{:
+int val=Integer.parseInt((String)e);
+RESULT= new NodeE(val,0);
+:}
+;
